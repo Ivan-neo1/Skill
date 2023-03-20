@@ -1,0 +1,101 @@
+python manage.py makemigrations
+
+python manage.py migrate
+
+
+
+
+
+python3 manage.py shell
+
+
+
+from news.models import Author
+from news.models import Category
+from news.models import Post
+from news.models import PostCategory
+from news.models import Comment
+from django.contrib.auth.models import User
+
+
+
+user1 = User.objects.create_user(‘Петров’)
+user2 = User.objects.create_user(‘Сидоров’)
+user3 = User.objects.create_user(‘Иванов’)
+
+author1 = Author(user = user1, rating_user = 10)
+author1.save()
+
+author2 = Author(user = user2, rating_user = 5)
+author2.save()
+
+
+
+post_1 = Post(author =  author1 , article_or_news =Post.article, header = 'Zagolovok1', text = 'Текст1', rating_art_nws = 3)
+post_1.save()
+post_2 = Post(author =  author2 , article_or_news =Post.article, header = 'Zagolovok2', text = 'Текст 2', rating_art_nws = 2)
+post_2.save()
+news_1 = Post(author =  author1 , article_or_news =Post.news, header = 'Zagolovok новости1', text = 'Текст новости 1', rating_art_nws = 1)
+news_1.save()
+
+
+
+c1 = Category(cat = 'Политика')
+c1.save()
+c2 = Category(cat = 'Наука')
+c2.save()
+c3 = Category(cat = 'Авто')
+c3.save()
+c4 = Category(cat = 'Природа')
+c4.save()
+
+
+
+p1 = Category.objects.all()[0]
+
+p2 = Category.objects.all()[1]
+
+
+post_1.categories.add(p1)
+
+post_1.categories.add(p2)
+
+post_2.categories.add(p1)
+
+news_1.categories.add(p2)
+
+comment1 = Comment(post = post_1, user = user3, text_comment = 'Hello', rating_comment = 7)
+comment1.save()
+
+comment2 = Comment(post = post_2, user = user3, text_comment = 'Hello', rating_comment = 7)
+comment2.save()
+
+comment3 = Comment(post = post_1, user = user3, text_comment = 'Hello2', rating_comment = 7)
+comment3.save()
+
+comment4 = Comment(post = news_1, user = user3, text_comment = 'Hello', rating_comment = 7)
+comment4.save()
+
+
+Лайки:
+post_1.like()
+
+post_2.dislike()
+
+news_1.like()
+
+Узнать рейтинг автора:
+author2.rating_user
+
+Обновить рейтинг авторов
+author1.update_rating()
+author2.update_rating()
+
+
+Author.objects.all().order_by('-rating_user').values('user', 'rating_user')
+
+
+Post.objects.all().order_by('-rating_art_nws').values('time_in', 'rating_art_nws', 'header')
+
+
+post_1.preview()
